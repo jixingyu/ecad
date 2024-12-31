@@ -130,7 +130,7 @@ RUN sh -c 'echo "deb http://ftp.de.debian.org/debian sid main" > /etc/apt/source
 RUN apt-get update && \
     apt-get install -y libbz2-dev libcairo2-dev libglu1-mesa-dev \
     libgl1-mesa-dev libglew-dev libx11-dev libwxgtk3.2-dev \
-    mesa-common-dev pkg-config python3-dev python3-wxgtk4.0 \
+    mesa-common-dev pkg-config libpython3.11 python3-dev python3-wxgtk4.0 \
     libboost-all-dev libglm-dev libcurl4-openssl-dev \
     libgtk-3-dev \
     libngspice0-dev \
