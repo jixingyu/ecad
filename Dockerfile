@@ -35,10 +35,10 @@ RUN apt-get update && \
 WORKDIR /src
 
 RUN set -ex;            \
-    git clone https://gitlab.com/Liangtie/kicad.git; \
-    git clone https://gitlab.com/kicad/libraries/kicad-symbols.git; \
-    git clone https://gitlab.com/kicad/libraries/kicad-footprints.git; \
-    git clone https://gitlab.com/kicad/libraries/kicad-templates.git;
+    git clone -b ecad-viewer-1.0.1 --depth 1 https://gitlab.com/Liangtie/kicad.git; \
+    git clone --depth 1 https://gitlab.com/kicad/libraries/kicad-symbols.git; \
+    git clone --depth 1 https://gitlab.com/kicad/libraries/kicad-footprints.git; \
+    git clone --depth 1 https://gitlab.com/kicad/libraries/kicad-templates.git;
     
 WORKDIR /src/kicad
 
@@ -161,7 +161,8 @@ RUN apt-get update && \
     libsecret-1-0 \
     libprotobuf32 \
     libzstd1 \
-    sudo
+    sudo \
+    libnng-dev
 
 
 COPY --from=build /usr/installtemp/bin /usr/bin
