@@ -36,7 +36,7 @@ RUN apt-get update && \
 WORKDIR /src
 
 RUN set -ex;            \
-    git clone -b ecad-viewer-1.0.1 --depth 1 https://gitlab.com/Liangtie/kicad.git; \
+    git clone --depth 1 https://gitlab.com/kicad/code/kicad.git; \
     git clone --depth 1 https://gitlab.com/kicad/libraries/kicad-symbols.git; \
     git clone --depth 1 https://gitlab.com/kicad/libraries/kicad-footprints.git; \
     git clone --depth 1 https://gitlab.com/kicad/libraries/kicad-templates.git;
@@ -170,11 +170,11 @@ RUN apt-get clean autoclean; \
     apt-get autoremove -y; \
     rm -rf /var/lib/apt/lists/*
 
-# RUN set -ex;            \
-#     git clone --depth 1  https://github.com/openscopeproject/InteractiveHtmlBom.git /src/InteractiveHtmlBom;
-# RUN rm -rf /src/InteractiveHtmlBom/.git
-# RUN pip3 install --break-system-packages python-dotenv pika qiniu pymysql phpserialize
-# COPY ./gltfpack /usr/bin/
+RUN set -ex;            \
+    git clone --depth 1  https://github.com/openscopeproject/InteractiveHtmlBom.git /src/InteractiveHtmlBom;
+RUN rm -rf /src/InteractiveHtmlBom/.git
+RUN pip3 install --break-system-packages python-dotenv pika qiniu pymysql phpserialize
+COPY ./gltfpack /usr/bin/
 
 # Setup user
 RUN groupadd --gid $USER_GID $USER_NAME \
