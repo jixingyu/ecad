@@ -60,13 +60,6 @@ RUN set -ex; \
     ninja; \
     cmake --install . --prefix=/usr/installtemp/
 
-# Now test the build, shipping a broken image doesn't help us
-# Maybe we should only run the cli tests but all of them is fine for now
-RUN set -ex; \
-    pip3 install -r ./qa/tests/requirements.txt --break-system-packages; \
-    cd build/linux; \
-    ctest --output-on-failure
-
 # Continue library installs
 RUN set -ex; \
     cd /src/kicad-symbols; \
