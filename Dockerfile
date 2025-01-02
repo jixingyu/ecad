@@ -1,4 +1,4 @@
-FROM debian:bookworm
+FROM debian:bookworm AS build
 
 RUN sh -c 'echo "deb http://ftp.de.debian.org/debian sid main" > /etc/apt/sources.list'
 # install build dependencies 
@@ -112,64 +112,64 @@ RUN if [ $include_3d = true ]; then \
     cmake --install . --prefix=/usr/installtemp/; \
     fi
     
-# FROM debian:bookworm-slim AS runtime
-# ARG USER_NAME=kicad
-# ARG USER_UID=1000
-# ARG USER_GID=$USER_UID
+FROM debian:bookworm-slim AS runtime
+ARG USER_NAME=kicad
+ARG USER_UID=1000
+ARG USER_GID=$USER_UID
 
-# LABEL org.opencontainers.image.authors='https://groups.google.com/a/kicad.org/g/devlist' \
-#       org.opencontainers.image.url='https://kicad.org' \
-#       org.opencontainers.image.documentation='https://docs.kicad.org/' \
-#       org.opencontainers.image.source='https://gitlab.com/kicad/kicad-ci/kicad-cli-docker' \
-#       org.opencontainers.image.vendor='KiCad' \
-#       org.opencontainers.image.licenses='GPL-3.0-or-later' \
-#       org.opencontainers.image.description='Image containing KiCad EDA, python and the stock symbol and footprint libraries for use in automation workflows'
+LABEL org.opencontainers.image.authors='https://groups.google.com/a/kicad.org/g/devlist' \
+      org.opencontainers.image.url='https://kicad.org' \
+      org.opencontainers.image.documentation='https://docs.kicad.org/' \
+      org.opencontainers.image.source='https://gitlab.com/kicad/kicad-ci/kicad-cli-docker' \
+      org.opencontainers.image.vendor='KiCad' \
+      org.opencontainers.image.licenses='GPL-3.0-or-later' \
+      org.opencontainers.image.description='Image containing KiCad EDA, python and the stock symbol and footprint libraries for use in automation workflows'
 
-# # install runtime dependencies 
-# RUN apt-get update && \
-#     apt-get install -y libbz2-1.0 \
-#     libcairo2 \
-#     libglu1-mesa \
-#     libglew2.2 \ 
-#     libx11-6 \
-#     libwxgtk3.2* \
-#     libpython3.11 \
-#     python3 \ 
-#     python3-wxgtk4.0 \
-#     python3-yaml \ 
-#     python3-typing-extensions \
-#     libcurl4 \
-#     libngspice0 \
-#     ngspice \
-#     libocct-modeling-algorithms-7.6 \
-#     libocct-modeling-data-7.6 \
-#     libocct-data-exchange-7.6 \
-#     libocct-visualization-7.6 \
-#     libocct-foundation-7.6 \
-#     libocct-ocaf-7.6 \
-#     unixodbc \
-#     zlib1g \
-#     shared-mime-info \
-#     git \
-#     libgit2-1.5 \
-#     libsecret-1-0 \
-#     libprotobuf32 \
-#     libzstd1 \
-#     sudo \
-#     libnng-dev
+# install runtime dependencies 
+RUN apt-get update && \
+    apt-get install -y libbz2-1.0 \
+    libcairo2 \
+    libglu1-mesa \
+    libglew2.2 \ 
+    libx11-6 \
+    libwxgtk3.2* \
+    libpython3.11 \
+    python3 \ 
+    python3-wxgtk4.0 \
+    python3-yaml \ 
+    python3-typing-extensions \
+    libcurl4 \
+    libngspice0 \
+    ngspice \
+    libocct-modeling-algorithms-7.6 \
+    libocct-modeling-data-7.6 \
+    libocct-data-exchange-7.6 \
+    libocct-visualization-7.6 \
+    libocct-foundation-7.6 \
+    libocct-ocaf-7.6 \
+    unixodbc \
+    zlib1g \
+    shared-mime-info \
+    git \
+    libgit2-1.5 \
+    libsecret-1-0 \
+    libprotobuf32 \
+    libzstd1 \
+    sudo \
+    libnng-dev
 
 
-# COPY --from=build /usr/installtemp/bin /usr/bin
-# COPY --from=build /usr/installtemp/share /usr/share
-# COPY --from=build /usr/installtemp/lib /usr/lib
+COPY --from=build /usr/installtemp/bin /usr/bin
+COPY --from=build /usr/installtemp/share /usr/share
+COPY --from=build /usr/installtemp/lib /usr/lib
 
-# # fix the linkage to libkicad_3dsg
-# RUN ldconfig -l /usr/bin/_pcbnew.kiface
+# fix the linkage to libkicad_3dsg
+RUN ldconfig -l /usr/bin/_pcbnew.kiface
 
-# # cleanup
-# RUN apt-get clean autoclean; \
-#     apt-get autoremove -y; \
-#     rm -rf /var/lib/apt/lists/*
+# cleanup
+RUN apt-get clean autoclean; \
+    apt-get autoremove -y; \
+    rm -rf /var/lib/apt/lists/*
 
 # RUN set -ex;            \
 #     git clone --depth 1  https://github.com/openscopeproject/InteractiveHtmlBom.git /src/InteractiveHtmlBom;
@@ -177,18 +177,18 @@ RUN if [ $include_3d = true ]; then \
 # RUN pip3 install --break-system-packages python-dotenv pika qiniu pymysql phpserialize
 # COPY ./gltfpack /usr/bin/
 
-# # Setup user
-# RUN groupadd --gid $USER_GID $USER_NAME \
-#     && useradd --uid $USER_UID --gid $USER_GID -m $USER_NAME \
-#     && usermod -aG sudo $USER_NAME \
-#     && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+# Setup user
+RUN groupadd --gid $USER_GID $USER_NAME \
+    && useradd --uid $USER_UID --gid $USER_GID -m $USER_NAME \
+    && usermod -aG sudo $USER_NAME \
+    && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
-# # Copy over the lib tables to the user config directory
-# RUN mkdir -p /home/$USER_NAME/.config/kicad/$(kicad-cli -v | cut -d . -f 1,2)
+# Copy over the lib tables to the user config directory
+RUN mkdir -p /home/$USER_NAME/.config/kicad/$(kicad-cli -v | cut -d . -f 1,2)
 
-# RUN mv /usr/share/kicad/template/*-lib-table /home/$USER_NAME/.config/kicad/$(kicad-cli -v | cut -d . -f 1,2)
+RUN mv /usr/share/kicad/template/*-lib-table /home/$USER_NAME/.config/kicad/$(kicad-cli -v | cut -d . -f 1,2)
 
-# RUN chown -R $USER_NAME:$USER_NAME /home/$USER_NAME/.config
-# RUN chown -R $USER_NAME:$USER_NAME /tmp/org.kicad.kicad || true
+RUN chown -R $USER_NAME:$USER_NAME /home/$USER_NAME/.config
+RUN chown -R $USER_NAME:$USER_NAME /tmp/org.kicad.kicad || true
 
-# USER $USER_NAME
+USER $USER_NAME
