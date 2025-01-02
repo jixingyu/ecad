@@ -128,37 +128,34 @@ LABEL org.opencontainers.image.authors='https://groups.google.com/a/kicad.org/g/
 RUN sh -c 'echo "deb http://ftp.de.debian.org/debian sid main" > /etc/apt/sources.list'
 
 # install runtime dependencies 
+
 RUN apt-get update && \
-    apt-get install -y libbz2-1.0 \
-    libcairo2 \
-    libglu1-mesa \
-    libglew2.2 \ 
-    libx11-6 \
-    libwxgtk3.2* \
-    libpython3.12 \
-    python3 \ 
-    python3-wxgtk4.0 \
-    python3-yaml \ 
-    python3-typing-extensions \
-    libcurl4 \
-    libngspice0 \
-    ngspice \
-    libocct-modeling-algorithms-7.6 \
-    libocct-modeling-data-7.6 \
-    libocct-data-exchange-7.6 \
-    libocct-visualization-7.6 \
-    libocct-foundation-7.6 \
-    libocct-ocaf-7.6 \
-    unixodbc \
-    zlib1g \
+    apt-get install -y libbz2-dev libcairo2-dev libglu1-mesa-dev \
+    libgl1-mesa-dev libglew-dev libx11-dev libwxgtk3.2-dev \
+    mesa-common-dev pkg-config python3-dev python3-wxgtk4.0 \
+    libboost-all-dev libglm-dev libcurl4-openssl-dev \
+    libgtk-3-dev \
+    libngspice0-dev \
+    ngspice-dev \
+    libocct-modeling-algorithms-dev \
+    libocct-modeling-data-dev \
+    libocct-data-exchange-dev \
+    libocct-visualization-dev \
+    libocct-foundation-dev \
+    libocct-ocaf-dev \
+    unixodbc-dev \
+    zlib1g-dev \
     shared-mime-info \
     git \
-    libgit2-1.5 \
-    libsecret-1-0 \
-    libprotobuf32 \
-    libzstd1 \
-    sudo \
-    libnng-dev
+    gettext \
+    libgit2-dev \
+    libsecret-1-dev \
+    libnng-dev \
+    protobuf-compiler \
+    python3-pip \
+    python3-venv \
+    curl \
+    sudo
 
 
 COPY --from=build /usr/installtemp/bin /usr/bin
