@@ -125,6 +125,8 @@ LABEL org.opencontainers.image.authors='https://groups.google.com/a/kicad.org/g/
       org.opencontainers.image.licenses='GPL-3.0-or-later' \
       org.opencontainers.image.description='Image containing KiCad EDA, python and the stock symbol and footprint libraries for use in automation workflows'
 
+RUN sh -c 'echo "deb http://ftp.de.debian.org/debian sid main" > /etc/apt/sources.list'
+
 # install runtime dependencies 
 RUN apt-get update && \
     apt-get install -y libbz2-1.0 \
@@ -133,7 +135,7 @@ RUN apt-get update && \
     libglew2.2 \ 
     libx11-6 \
     libwxgtk3.2* \
-    libpython3.11 \
+    libpython3.12 \
     python3 \ 
     python3-wxgtk4.0 \
     python3-yaml \ 
