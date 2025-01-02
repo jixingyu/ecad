@@ -36,7 +36,7 @@ RUN apt-get update && \
 WORKDIR /src
 
 RUN set -ex;            \
-    git clone https://gitlab.com/kicad/code/kicad.git; \
+    git clone --depth 1 --branch 8.0.7 https://gitlab.com/kicad/code/kicad.git; \
     git clone https://gitlab.com/kicad/libraries/kicad-symbols.git; \
     git clone https://gitlab.com/kicad/libraries/kicad-footprints.git; \
     git clone https://gitlab.com/kicad/libraries/kicad-templates.git;
