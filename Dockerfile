@@ -173,7 +173,7 @@ RUN apt-get clean autoclean; \
 RUN set -ex;            \
     git clone --depth 1  https://github.com/openscopeproject/InteractiveHtmlBom.git /src/InteractiveHtmlBom;
 RUN rm -rf /src/InteractiveHtmlBom/.git
-RUN pip3 install --break-system-packages python-dotenv pika qiniu pymysql phpserialize
+RUN pip3 install --break-system-packages python-dotenv pika qiniu pymysql
 COPY ./gltfpack /usr/bin/
 
 # Setup user
